@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createAccount } from "fbase";
+import { createAccount, socialLogIn } from "fbase";
 
 const Auth = (props) => {
   const [email, setEmail] = useState("");
@@ -21,6 +21,15 @@ const Auth = (props) => {
     } catch (error) {
       setErrorMsg(error.message);
     }
+  };
+
+  const toggleAccount = (e) => {
+    setNewAccout((prev) => !prev);
+  };
+
+  const socialSignIn = async (e) => {
+    const data = await socialLogIn();
+    console.log(data);
   };
 
   return (
@@ -47,8 +56,13 @@ const Auth = (props) => {
         </button>
       </form>
       <span>{errorMsg}</span>
+      <button onClick={toggleAccount}>
+        {newAccount ? "Sign In" : "Create Account"}
+      </button>
       <div>
-        <button>Continue with Google</button>
+        <button onClick={socialSignIn} name="google">
+          Continue with Google
+        </button>
         <button disabled>Continue with Github</button>
       </div>
     </>

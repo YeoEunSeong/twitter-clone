@@ -1,5 +1,19 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+} from "firebase/auth";
+import {
+  getFirestore,
+  addDoc,
+  doc,
+  deleteDoc,
+  collection,
+  updateDoc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -13,6 +27,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const authService = getAuth();
+authService.languageCode = "kr";
 
 export const createAccount = (email, password) =>
   createUserWithEmailAndPassword(authService, email, password);
+
+export const socialLogIn = async () => {
+  const provider = new GoogleAuthProvider();
+  return await signInWithPopup(authService, provider);
+};
+
+export const logout = () => {
+  signOut(authService);
+};
+
+export const dbService = getFirestore();
+
+export const addTweet = async (tweet, uid) => {
+  try {
+    await addDoc(collection(dbService, "tweets"), {
+      tweet,
+      createdAt: Date.now(),
+      creatorId: uid,
+    });
+  } catch (error) {
+    console.error("Error adding document: ", error);
+  }
+};
+
+export const deleteTweet = async (id) => {
+  await deleteDoc(doc(dbService, "tweets", id));
+};
+
+export const updateTweet = async (id, newTweet) => {
+  await updateDoc(doc(dbService, "tweets", id), { tweet: newTweet });
+};

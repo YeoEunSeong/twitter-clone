@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { addTweet, dbService } from "fbase";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
-const Home = (props) => {
+const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState([]);
 
   const getTweet = async () => {
-    const unsub = onSnapshot(collection(dbService, "tweets"), (snapshot) => {
+    onSnapshot(collection(dbService, "tweets"), (snapshot) => {
       const _tweets = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -29,7 +29,7 @@ const Home = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    addTweet(tweet);
+    addTweet(tweet, userObj.uid);
     setTweet("");
   };
 

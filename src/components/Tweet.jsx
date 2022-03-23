@@ -6,12 +6,21 @@ const Tweet = ({ tweetObj, isOwner }) => {
   const [newTweet, setNewTweet] = useState(tweetObj.tweet);
 
   const onDeleteClick = (e) => {
-    deleteTweet(tweetObj.id);
+    const ok = window.confirm("Are you sure you delete this tweet?");
+    if (ok) {
+      deleteTweet(tweetObj.id);
+    }
   };
 
   const toggleEditting = () => {
     setEditting((editting) => !editting);
   };
+
+  const onCancleClick = () => {
+    setNewTweet(tweetObj.tweet);
+    setEditting(false);
+  };
+
   const onChange = (e) => {
     const {
       target: { value },
@@ -31,7 +40,9 @@ const Tweet = ({ tweetObj, isOwner }) => {
         <>
           <form onSubmit={onSubmit}>
             <input onChange={onChange} value={newTweet} type="text" />
-            <button>cancle</button>
+            <button type="button" onClick={onCancleClick}>
+              cancle
+            </button>
           </form>
         </>
       ) : (

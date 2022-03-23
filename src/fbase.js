@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -14,6 +15,13 @@ import {
   collection,
   updateDoc,
 } from "firebase/firestore";
+
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -43,10 +51,11 @@ export const logout = () => {
 
 export const dbService = getFirestore();
 
-export const addTweet = async (tweet, uid) => {
+export const addTweet = async (tweet, url, uid) => {
   try {
     await addDoc(collection(dbService, "tweets"), {
       tweet,
+      url,
       createdAt: Date.now(),
       creatorId: uid,
     });
@@ -61,4 +70,17 @@ export const deleteTweet = async (id) => {
 
 export const updateTweet = async (id, newTweet) => {
   await updateDoc(doc(dbService, "tweets", id), { tweet: newTweet });
+};
+
+const storageService = getStorage();
+
+export const uploadImage = async (uid, attachment) => {
+  const imageRef = ref(storageService, `${uid}/${uuidv4()}`);
+  const response = await uploadString(imageRef, attachment, "data_url");
+  return response;
+};
+
+export const getUrl = async (path) => {
+  const response = await getDownloadURL(ref(storageService, path));
+  return response;
 };

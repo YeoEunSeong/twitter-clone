@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { deleteTweet, updateTweet } from "fbase";
+import { deleteTweet, deleteImage, updateTweet } from "fbase";
 
 const Tweet = ({ tweetObj, isOwner }) => {
   const [edtting, setEditting] = useState(false);
@@ -9,6 +9,7 @@ const Tweet = ({ tweetObj, isOwner }) => {
     const ok = window.confirm("Are you sure you delete this tweet?");
     if (ok) {
       deleteTweet(tweetObj.id);
+      deleteImage(tweetObj.url);
     }
   };
 

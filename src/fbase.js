@@ -21,6 +21,7 @@ import {
   ref,
   uploadString,
   getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
 
 const firebaseConfig = {
@@ -83,4 +84,8 @@ export const uploadImage = async (uid, attachment) => {
 export const getUrl = async (path) => {
   const response = await getDownloadURL(ref(storageService, path));
   return response;
+};
+
+export const deleteImage = async (url) => {
+  const response = await deleteObject(ref(storageService, url));
 };
